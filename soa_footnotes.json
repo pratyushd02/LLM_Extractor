@@ -1,0 +1,669 @@
+{
+  "protocol_id": "CTJ301UC201",
+  "sponsor": "Leading Biopharm Limited",
+  "indication": "Active Ulcerative Colitis",
+  "investigational_product": "TJ301 (Olamkicept)",
+  "model": "qwen3-coder:480b-cloud",
+  "extracted_at": "2026-04-19T19:07:37Z",
+  "total_footnotes": 20,
+  "footnotes": [
+    {
+      "symbol": "\"a\"",
+      "procedure": "Informed Consent Form (ICF) signing",
+      "visits": [
+        "V1 (Screening)",
+        "V2 (Day 0)"
+      ],
+      "tags": [
+        "timing",
+        "scope",
+        "population"
+      ],
+      "conditions": [
+        {
+          "type": "timing",
+          "description": "ICF signing should occur during Run-in Period",
+          "applies_if": "ICF not already signed",
+          "value": null
+        }
+      ],
+      "key_fields": {
+        "procedure": "Informed Consent Form (ICF) signing"
+      },
+      "raw_text": "If not already signed the ICF during the Run-in Period",
+      "source_page": 45,
+      "confidence": 0.95,
+      "notes": "Assumed that if ICF was not signed during Run-in Period, it must be signed at this procedure step. No explicit timing window provided."
+    },
+    {
+      "symbol": "\"b\"",
+      "procedure": "Endoscopy with mucosal biopsies",
+      "visits": [
+        "V1 (Screening)",
+        "V8 (Week 12)"
+      ],
+      "tags": [
+        "timing",
+        "scope",
+        "condition"
+      ],
+      "conditions": [
+        {
+          "type": "timing",
+          "description": "Endoscopy must be conducted within 35 days before randomisation",
+          "applies_if": null,
+          "value": "35 days"
+        },
+        {
+          "type": "conditional",
+          "description": "If no diagnostic colonoscopy with serial biopsy has been performed within one year of screening, a full colonoscopy is required",
+          "applies_if": "no diagnostic colonoscopy with serial biopsy within one year of screening",
+          "value": null
+        },
+        {
+          "type": "scope",
+          "description": "During screening, diagnostic colonoscopy or flexible sigmoidoscopy at investigator's discretion",
+          "applies_if": null,
+          "value": null
+        }
+      ],
+      "key_fields": {
+        "reader_type": "centrally read",
+        "modalities": [
+          "colonoscopy",
+          "flexible sigmoidoscopy"
+        ],
+        "biopsy_analyses": "mucosal biopsies"
+      },
+      "raw_text": "Including mucosal biopsies. During screening, diagnostic colonoscopy or flexible sigmoidoscopy, at the discretion of the Investigator (if no diagnostic colonoscopy with serial biopsy has been performed within one year of screening, a full colonoscopy is required, to exclude malignancy), centrally read. Endoscopy conducted within 35 days before Randomisation is acceptable. At Visit 8, flexible sigmoidoscopy, centrally read.",
+      "source_page": 45,
+      "confidence": 0.95,
+      "notes": "Assumed that 'centrally read' applies to all endoscopy procedures mentioned unless otherwise specified"
+    },
+    {
+      "symbol": "\"c\"",
+      "procedure": "screening endoscopy",
+      "visits": [
+        "V1 (Screening)"
+      ],
+      "tags": [
+        "timing",
+        "scope"
+      ],
+      "conditions": [
+        {
+          "type": "timing",
+          "description": "Screening endoscopy should be performed between Day -35 and Day -6 prior to randomisation",
+          "applies_if": null,
+          "value": "Day -35 to Day -6"
+        }
+      ],
+      "key_fields": {
+        "procedure": "screening endoscopy"
+      },
+      "raw_text": "The screening endoscopy should be performed at Day -35 to Day -6 prior to Randomisation.",
+      "source_page": 45,
+      "confidence": 0.95,
+      "notes": "Timing window is clearly defined but specific endoscopy details (reader type, modalities, biopsy analyses) are not provided in the footnote"
+    },
+    {
+      "symbol": "\"d\"",
+      "procedure": "Stool frequency and rectal bleeding scoring",
+      "visits": [
+        "V1 (Screening)",
+        "V2 (Baseline)",
+        "V3 (Week 2)",
+        "V4 (Week 4)",
+        "V5 (Week 6)",
+        "V6 (Week 8)",
+        "V7 (Week 10)",
+        "V8 (Week 12)"
+      ],
+      "tags": [
+        "timing",
+        "scope",
+        "condition"
+      ],
+      "conditions": [
+        {
+          "type": "timing",
+          "description": "Scores calculated from Patient daily Diary for up to 5 days prior to each applicable visit",
+          "applies_if": null,
+          "value": "5"
+        },
+        {
+          "type": "timing",
+          "description": "Scores calculated from Patient daily Diary for at least 3 days prior to each applicable visit",
+          "applies_if": null,
+          "value": "3"
+        },
+        {
+          "type": "conditional",
+          "description": "Stool frequency and rectal bleeding subscore considered missing if patient undergoes bowel preparation for endoscopy",
+          "applies_if": "patient undergoes bowel preparation for endoscopy",
+          "value": null
+        },
+        {
+          "type": "timing",
+          "description": "Stool frequency and rectal bleeding subscore considered missing for the day of all endoscopies",
+          "applies_if": "day of endoscopy",
+          "value": null
+        },
+        {
+          "type": "timing",
+          "description": "Stool frequency and rectal bleeding subscore considered missing for the day after all endoscopies",
+          "applies_if": "day after endoscopy",
+          "value": null
+        }
+      ],
+      "key_fields": {
+        "procedure": "Stool frequency and rectal bleeding scoring"
+      },
+      "raw_text": "The scores for stool frequency and rectal bleeding will be calculated as an average based on scores collected from the Patient daily Diary, for up to 5, but at least 3 days prior to each applicable visit. If the patient undergoes bowel preparation for endoscopy any of the days before a visit, the stool frequency and rectal bleeding subscore for that day(s) should be considered missing. In addition, the stool frequency and rectal bleeding subscore will be considered missing for the day of all endoscopies and the day after.",
+      "source_page": 45,
+      "confidence": 0.95,
+      "notes": "The footnote describes scoring methodology rather than specific procedural parameters. No explicit endoscopy parameters match the key_fields requirements."
+    },
+    {
+      "symbol": "\"e\"",
+      "procedure": "Blood sample collection for PK analysis",
+      "visits": [
+        "V2 (Day 0)",
+        "V3 (Week 2)",
+        "V4 (Week 4)",
+        "V5 (Week 6)",
+        "V6 (Week 8)",
+        "V7 (Week 10)",
+        "V8 (Week 12)",
+        "V9 (Day 105)"
+      ],
+      "tags": [
+        "timing",
+        "scope",
+        "population"
+      ],
+      "conditions": [
+        {
+          "type": "population",
+          "description": "Mainland China PK subgroup only",
+          "applies_if": null,
+          "value": null
+        }
+      ],
+      "key_fields": {
+        "procedure": "Blood sample collection for PK analysis",
+        "sampling_type": "PK analysis",
+        "population": "Mainland China PK subgroup",
+        "timepoints_hours": "At 1st dose: pre-dose and 0.5, 1, 2 (end of infusion), 6, 48, 144 (Day 6), and 240 (Day 10) h after the start of the 1st administration; At the 2nd, 3rd, 4th, and 5th administrations: pre-dose and at the end of infusion; At 6th dose: pre-dose and 0.5, 1, 2 (end of infusion), 6, 48, 144 (Day 76), 240 (Day 80), 336 (Day 84), 480 (Day 90), and 840 h (Day 105) after the start of the 6th administration"
+      },
+      "raw_text": "For Mainland China PK subgroup only. At 1st dose: pre-dose and 0.5, 1, 2 (end of infusion), 6, 48, 144 (Day 6), and 240 (Day 10) h after the start of the 1st administration; At the 2nd, 3rd , 4th, and 5th administrations blood samples will be collected pre-dose and at the end of infusion; At 6th dose: pre-dose and 0.5, 1, 2 (end of infusion), 6, 48, 144 (Day 76), 240 (Day 80), 336 (Day 84), 480 (Day 90), and 840 h (Day 105) after the start of the 6th administration.",
+      "source_page": 45,
+      "confidence": 0.95,
+      "notes": "Assumed 'end of infusion' refers to 2 hours based on context. Timepoints are described in detail per dose administration."
+    },
+    {
+      "symbol": "\"f\"",
+      "procedure": "Biomarker analysis (ESR, CRP, neutrophil and platelet count, IL-6, IL-6/sIL-6R complex, faecal calprotectin)",
+      "visits": [
+        "V2 (Baseline)",
+        "V8 (End of Treatment)"
+      ],
+      "tags": [
+        "timing",
+        "scope"
+      ],
+      "conditions": [
+        {
+          "type": "timing",
+          "description": "Patient should be in fasting state",
+          "applies_if": "Visits 2 and 8",
+          "value": "≥8 hours"
+        },
+        {
+          "type": "lab",
+          "description": "Local site analysis",
+          "applies_if": "ESR, CRP, neutrophil and platelet count tests",
+          "value": null
+        },
+        {
+          "type": "lab",
+          "description": "Central lab analysis",
+          "applies_if": "IL-6, IL-6/sIL-6R complex, and faecal calprotectin tests",
+          "value": null
+        }
+      ],
+      "key_fields": {
+        "analytes": "ESR, CRP, neutrophil and platelet count, IL-6, IL-6/sIL-6R complex, faecal calprotectin",
+        "lab_type": "mixed (local and central)"
+      },
+      "raw_text": "Biomarkers erythrocyte sedimentation rate [ESR], C-reactive protein (CRP), neutrophil and platelet count tests will be be analysed in local sites. IL-6, IL-6/sIL-6R complex, and faecal calprotectin tests will be analysed in central lab. At Visits 2 and 8, the patient should be in a fasting state (≥8 hours).",
+      "source_page": 45,
+      "confidence": 0.95,
+      "notes": "Assumed that 'Biomarker analysis' procedure type applies. Collection weeks and storage temperature not specified. Fasting requirement only mentioned for specific visits."
+    },
+    {
+      "symbol": "\"g\"",
+      "procedure": "Clinical laboratory tests",
+      "visits": [
+        "V1 (Screening)"
+      ],
+      "tags": [
+        "timing",
+        "scope"
+      ],
+      "conditions": [
+        {
+          "type": "timing",
+          "description": "Clinical laboratory tests should be conducted 5 to 1 days prior to randomisation",
+          "applies_if": null,
+          "value": "-5 to -1 days"
+        },
+        {
+          "type": "scope",
+          "description": "Includes multiple types of laboratory assessments",
+          "applies_if": null,
+          "value": "haematology, clinical chemistry, coagulation tests, urinalysis"
+        }
+      ],
+      "key_fields": {
+        "lab_type": "haematology, clinical chemistry, coagulation tests, urinalysis"
+      },
+      "raw_text": "Includes haematology, clinical chemistry, coagulation tests, and urinalysis assessments. Clinical laboratory test should be conducted -5 to -1 days prior to Randomisation.",
+      "source_page": 45,
+      "confidence": 0.95,
+      "notes": "Timing window is clearly specified as -5 to -1 days relative to randomisation. Lab types are explicitly listed."
+    },
+    {
+      "symbol": "22",
+      "procedure": "Infection assessment",
+      "visits": [
+        "All visits"
+      ],
+      "tags": [
+        "timing",
+        "scope",
+        "condition"
+      ],
+      "conditions": [
+        {
+          "type": "conditional",
+          "description": "Infection requires treatment with antibiotics, antivirals, or other antimicrobial agents",
+          "applies_if": "infection present",
+          "value": null
+        }
+      ],
+      "key_fields": {
+        "procedure": "Infection assessment"
+      },
+      "raw_text": "Infections (including diverticulitis) requiring treatment with antibiotics, antivirals, or",
+      "source_page": 36,
+      "confidence": 0.8,
+      "notes": "Footnote appears incomplete (truncated after 'or'). Assumed to refer to infections requiring antimicrobial treatment including diverticulitis. No specific timing, population, or quantitative criteria provided."
+    },
+    {
+      "symbol": "23",
+      "procedure": "Medical history assessment",
+      "visits": [
+        "V1 (Screening)"
+      ],
+      "tags": [
+        "timing",
+        "scope",
+        "population"
+      ],
+      "conditions": [
+        {
+          "type": "population",
+          "description": "Patients with any prior use of biologic drugs",
+          "applies_if": null,
+          "value": null
+        }
+      ],
+      "key_fields": {},
+      "raw_text": "Any prior use of biologic drugs.",
+      "source_page": 36,
+      "confidence": 0.9,
+      "notes": "Footnote describes population characteristic rather than specific procedural requirements"
+    },
+    {
+      "symbol": "24",
+      "procedure": "Live vaccine administration",
+      "visits": [
+        "V1 (Screening)",
+        "V2 (Day 0)"
+      ],
+      "tags": [
+        "timing",
+        "condition",
+        "population"
+      ],
+      "conditions": [
+        {
+          "type": "timing",
+          "description": "Received live vaccines within 30 days prior to randomisation",
+          "applies_if": "live vaccine administration",
+          "value": "30 days"
+        }
+      ],
+      "key_fields": {
+        "procedure_type": "Live vaccine administration"
+      },
+      "raw_text": "Received any live (attenuated) vaccines within 30 days prior to Randomisation.",
+      "source_page": 36,
+      "confidence": 0.95,
+      "notes": "Assumed 'Randomisation' refers to study randomization date; timing window is clearly defined as 30 days prior"
+    },
+    {
+      "symbol": "25",
+      "procedure": "Screening for recent corticosteroid use",
+      "visits": [
+        "V1 (Screening)"
+      ],
+      "tags": [
+        "timing",
+        "condition",
+        "population"
+      ],
+      "conditions": [
+        {
+          "type": "timing",
+          "description": "Recent treatment with corticosteroids",
+          "applies_if": null,
+          "value": null
+        },
+        {
+          "type": "population",
+          "description": "Patients who received medium-to-high-dose intravenous corticosteroids",
+          "applies_if": null,
+          "value": null
+        }
+      ],
+      "key_fields": {
+        "drug_name": "methylprednisolone"
+      },
+      "raw_text": "Recent treatment with medium-to-high-dose intravenous corticosteroids (methylprednisolone",
+      "source_page": 36,
+      "confidence": 0.85,
+      "notes": "Dose range and timing window for 'recent' treatment are not specified. Route of administration (intravenous) is mentioned but not explicitly tied to methylprednisolone."
+    },
+    {
+      "symbol": "26",
+      "procedure": "Receipt of immunosuppressive medications",
+      "visits": [
+        "V1 (Screening)",
+        "V2 (Day 0)"
+      ],
+      "tags": [
+        "timing",
+        "condition",
+        "population"
+      ],
+      "conditions": [
+        {
+          "type": "timing",
+          "description": "Receipt of immunosuppressive medications within 30 days prior",
+          "applies_if": null,
+          "value": "30"
+        }
+      ],
+      "key_fields": {
+        "schedule_days": "30"
+      },
+      "raw_text": "Receipt of cyclosporine, tacrolimus, sirolimus, or mycophenolate mofetil within 30 days prior",
+      "source_page": 36,
+      "confidence": 0.95,
+      "notes": "Assuming 'within 30 days prior' refers to schedule_days before study procedure"
+    },
+    {
+      "symbol": "27",
+      "procedure": "Treatment with therapeutic enema or suppository",
+      "visits": [
+        "All visits"
+      ],
+      "tags": [
+        "timing",
+        "scope",
+        "condition",
+        "population"
+      ],
+      "conditions": [],
+      "key_fields": {},
+      "raw_text": "Treatment with therapeutic enema or suppository, other than required for endoscopy",
+      "source_page": 36,
+      "confidence": 0.8,
+      "notes": "Footnote clarifies exclusion of enemas/suppositories used specifically for endoscopy preparation, but does not specify timing, frequency, or other procedural details"
+    },
+    {
+      "symbol": "a",
+      "procedure": "Informed Consent Form (ICF) signing",
+      "visits": [
+        "V1 (Screening)",
+        "V2 (Day 0)"
+      ],
+      "tags": [
+        "timing",
+        "condition",
+        "population"
+      ],
+      "conditions": [
+        {
+          "type": "conditional",
+          "description": "ICF signing is required if not already completed during Run-in Period",
+          "applies_if": "ICF not signed during Run-in Period",
+          "value": null
+        }
+      ],
+      "key_fields": {},
+      "raw_text": "If not already signed the ICF during the Run-in Period",
+      "source_page": 45,
+      "confidence": 0.95,
+      "notes": "The footnote describes a conditional requirement for ICF signing based on whether it was already completed during the Run-in Period. No specific timing or population restrictions are mentioned."
+    },
+    {
+      "symbol": "b",
+      "procedure": "mucosal biopsies",
+      "visits": [
+        "V1 (Screening)",
+        "V8 (Week 12)"
+      ],
+      "tags": [
+        "timing",
+        "scope"
+      ],
+      "conditions": [
+        {
+          "type": "timing",
+          "description": "biopsies performed during screening period",
+          "applies_if": null,
+          "value": null
+        },
+        {
+          "type": "conditional",
+          "description": "diagnostic colonoscopy or flexible sigmoidoscopy performed if no prior diagnostic colonoscopy with serial biopsy within one year",
+          "applies_if": "no diagnostic colonoscopy with serial biopsy within one year",
+          "value": null
+        },
+        {
+          "type": "scope",
+          "description": "investigator discretion in choosing between diagnostic colonoscopy or flexible sigmoidoscopy",
+          "applies_if": null,
+          "value": null
+        }
+      ],
+      "key_fields": {
+        "modalities": [
+          "diagnostic colonoscopy",
+          "flexible sigmoidoscopy"
+        ],
+        "biopsy_analyses": "serial biopsy"
+      },
+      "raw_text": "Including mucosal biopsies. During screening, diagnostic colonoscopy or flexible sigmoidoscopy, at the discretion of the Investigator (if no diagnostic colonoscopy with serial biopsy has been performed within one year of",
+      "source_page": 45,
+      "confidence": 0.85,
+      "notes": "Timing of biopsy collection is specified as during screening. The footnote implies these are diagnostic procedures that include mucosal biopsies. No explicit mention of reader type or specific storage conditions."
+    },
+    {
+      "symbol": "c",
+      "procedure": "screening endoscopy",
+      "visits": [
+        "V1 (Screening)"
+      ],
+      "tags": [
+        "timing",
+        "scope"
+      ],
+      "conditions": [
+        {
+          "type": "timing",
+          "description": "Screening endoscopy should be performed between Day -35 and Day -6 prior to randomisation",
+          "applies_if": null,
+          "value": "Day -35 to Day -6"
+        }
+      ],
+      "key_fields": {
+        "modalities": "screening endoscopy"
+      },
+      "raw_text": "The screening endoscopy should be performed at Day -35 to Day -6 prior to Randomisation.",
+      "source_page": 45,
+      "confidence": 0.9,
+      "notes": "Assumed 'screening endoscopy' refers to the procedure modality; timing window is clearly specified but exact day within window not mandated"
+    },
+    {
+      "symbol": "d",
+      "procedure": "Stool frequency and rectal bleeding scoring",
+      "visits": [
+        "V2 (Baseline)",
+        "V3 (Week 2)",
+        "V4 (Week 4)",
+        "V5 (Week 6)",
+        "V6 (Week 8)",
+        "V7 (Week 10)",
+        "V8 (Week 12)"
+      ],
+      "tags": [
+        "timing",
+        "scope"
+      ],
+      "conditions": [
+        {
+          "type": "timing",
+          "description": "Scores collected from Patient daily Diary for up to 5 days but at least 3 days prior to each applicable visit",
+          "applies_if": "prior to each applicable visit",
+          "value": "3-5 days"
+        }
+      ],
+      "key_fields": {
+        "collection_weeks": "prior to each applicable visit"
+      },
+      "raw_text": "The scores for stool frequency and rectal bleeding will be calculated as an average based on scores collected from the Patient daily Diary, for up to 5, but at least 3 days prior to each applicable visit. If the patient",
+      "source_page": 45,
+      "confidence": 0.8,
+      "notes": "Assumed 'applicable visit' refers to study visits where stool frequency and rectal bleeding assessments are scheduled"
+    },
+    {
+      "symbol": "e",
+      "procedure": "Blood sample collection for PK assessment",
+      "visits": [
+        "V2 (Day 0)",
+        "V3 (Week 2)",
+        "V4 (Week 4)",
+        "V5 (Week 6)",
+        "V6 (Week 8)",
+        "V7 (Week 10)"
+      ],
+      "tags": [
+        "timing",
+        "scope",
+        "population"
+      ],
+      "conditions": [
+        {
+          "type": "population",
+          "description": "Mainland China PK subgroup only",
+          "applies_if": null,
+          "value": "Mainland China PK subgroup"
+        }
+      ],
+      "key_fields": {
+        "procedure": "Blood sample collection for PK assessment",
+        "sampling_type": "PK assessment",
+        "timepoints_hours": "pre-dose, 0.5, 1, 2, 6, 48, 144, 240",
+        "observation_hours": "0.5, 1, 2, 6, 48, 144, 240"
+      },
+      "raw_text": "For Mainland China PK subgroup only. At 1st dose: pre-dose and 0.5, 1, 2 (end of infusion), 6, 48, 144 (Day 6), and 240 (Day 10) h after the start of the 1st administration; At the 2nd, 3rd , 4th, and 5th administrations blood",
+      "source_page": 45,
+      "confidence": 0.95,
+      "notes": "Timepoints include pre-dose and multiple post-dose measurements through Day 10 (240 hours). Sampling continues at 2nd, 3rd, 4th, and 5th administrations but specific timepoints not fully specified in excerpt."
+    },
+    {
+      "symbol": "f",
+      "procedure": "Biomarker analysis (ESR, CRP, neutrophil and platelet count, IL-6, IL-6/sIL-6R complex, faecal calprotectin)",
+      "visits": [
+        "V1 (Screening)",
+        "V2 (Baseline)",
+        "V3 (Week 2)",
+        "V4 (Week 4)",
+        "V5 (Week 6)",
+        "V6 (Week 8)",
+        "V7 (Week 10)",
+        "V8 (Week 12)",
+        "V9 (Safety Follow-up)"
+      ],
+      "tags": [
+        "timing",
+        "scope",
+        "condition",
+        "population",
+        "ordering"
+      ],
+      "conditions": [
+        {
+          "type": "lab",
+          "description": "IL-6, IL-6/sIL-6R complex, and faecal calprotectin tests will be analysed at central lab",
+          "applies_if": "analyte IN ['IL-6', 'IL-6/sIL-6R complex', 'faecal calprotectin']",
+          "value": null
+        },
+        {
+          "type": "lab",
+          "description": "ESR, CRP, neutrophil and platelet count tests will be analysed at local sites",
+          "applies_if": "analyte IN ['ESR', 'CRP', 'neutrophil count', 'platelet count']",
+          "value": null
+        }
+      ],
+      "key_fields": {
+        "lab_type": "local and central",
+        "analytes": "ESR, CRP, neutrophil count, platelet count, IL-6, IL-6/sIL-6R complex, faecal calprotectin"
+      },
+      "raw_text": "Biomarkers erythrocyte sedimentation rate [ESR], C-reactive protein (CRP), neutrophil and platelet count tests will be be analysed in local sites. IL-6, IL-6/sIL-6R complex, and faecal calprotectin tests will be analysed",
+      "source_page": 45,
+      "confidence": 0.85,
+      "notes": "Assumed that ESR refers to erythrocyte sedimentation rate based on context. Collection weeks and storage temperature not specified."
+    },
+    {
+      "symbol": "g",
+      "procedure": "Clinical laboratory tests (haematology, clinical chemistry, coagulation, urinalysis)",
+      "visits": [
+        "V1 (Screening)"
+      ],
+      "tags": [
+        "timing",
+        "scope"
+      ],
+      "conditions": [
+        {
+          "type": "timing",
+          "description": "Clinical laboratory tests should be conducted 5 to 1 days prior to Randomisation",
+          "applies_if": null,
+          "value": "-5 to -1 days"
+        }
+      ],
+      "key_fields": {
+        "lab_type": "haematology, clinical chemistry, coagulation, urinalysis"
+      },
+      "raw_text": "Includes haematology, clinical chemistry, coagulation tests, and urinalysis assessments. Clinical laboratory test should be conducted -5 to -1 days prior to Randomisation.",
+      "source_page": 45,
+      "confidence": 0.95,
+      "notes": "Timing window is clearly specified as -5 to -1 days relative to randomisation"
+    }
+  ]
+}

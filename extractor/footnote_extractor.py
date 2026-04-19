@@ -68,11 +68,26 @@ _PATTERN = re.compile(
 )
 
 
+def _normalize_symbol(symbol: str) -> str:
+    """Normalize symbol variants (e.g. '"a"', '(a)', 'A.') to a stable key."""
+    sym = symbol.strip()
+    while len(sym) >= 2 and sym[0] == sym[-1] and sym[0] in {"'", '"'}:
+        sym = sym[1:-1].strip()
+    sym = sym.rstrip(".").strip()
+
+    if re.fullmatch(r"\(([a-z0-9]{1,3}|[†‡§¶*#]{1,2})\)", sym, flags=re.IGNORECASE):
+        sym = sym[1:-1]
+    if re.fullmatch(r"[a-z0-9]{1,3}", sym, flags=re.IGNORECASE):
+        sym = sym.lower()
+
+    return sym
+
+
 def _regex_extract(page_texts: dict[int, str]) -> list[RawFootnote]:
     found, seen = [], set()
     for pg, text in sorted(page_texts.items()):
         for m in _PATTERN.finditer(text):
-            sym = m.group("sym").strip().rstrip(".")
+            sym = _normalize_symbol(m.group("sym"))
             body = m.group("text").strip()
             if sym not in seen and len(body) >= 25:
                 seen.add(sym)
@@ -88,7 +103,8 @@ def _llm_extract(
 ) -> list[RawFootnote]:
     chunk = config.extraction.pages_per_chunk
     pages = sorted(page_texts)
-    results, seen = [], set()
+    results: list[RawFootnote] = []
+    seen_to_idx: dict[str, int] = {}
 
     for i in range(0, len(pages), chunk):
         batch = pages[i : i + chunk]
@@ -104,15 +120,21 @@ def _llm_extract(
             parsed = {"footnotes": []}
 
         for fn in parsed.get("footnotes", []):
-            sym = str(fn.get("symbol", "")).strip()
+            sym = _normalize_symbol(str(fn.get("symbol", "")))
             text = str(fn.get("text", "")).strip()
-            if sym and text and sym not in seen:
-                seen.add(sym)
-                results.append(RawFootnote(
-                    symbol=sym,
-                    text=text,
-                    page=int(fn.get("page", batch[0])),
-                ))
+            if not sym or not text:
+                continue
+
+            page = int(fn.get("page", batch[0]))
+            if sym not in seen_to_idx:
+                seen_to_idx[sym] = len(results)
+                results.append(RawFootnote(symbol=sym, text=text, page=page))
+                continue
+
+            # If duplicate symbol appears, keep the richer variant.
+            idx = seen_to_idx[sym]
+            if len(text) > len(results[idx].text):
+                results[idx] = RawFootnote(symbol=sym, text=text, page=page)
         time.sleep(0.2)
 
     return results
@@ -131,8 +153,8 @@ def extract_footnotes(
     llm_results = _llm_extract(page_texts, config)
 
     # Fill gaps with regex
-    llm_syms = {fn.symbol for fn in llm_results}
+    llm_syms = {_normalize_symbol(fn.symbol) for fn in llm_results}
     regex_results = _regex_extract(page_texts)
-    extras = [fn for fn in regex_results if fn.symbol not in llm_syms]
+    extras = [fn for fn in regex_results if _normalize_symbol(fn.symbol) not in llm_syms]
 
     return llm_results + extras
