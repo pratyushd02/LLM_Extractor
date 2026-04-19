@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+import ast
 from typing import Any
 
 import requests
@@ -41,13 +42,46 @@ def chat(
 
 
 def parse_json(raw: str) -> dict[str, Any]:
-    """Parse JSON from an LLM response, stripping optional markdown fences."""
+    """Parse JSON from an LLM response with tolerant fallbacks."""
     text = raw.strip()
-    m = re.match(
-        r"^\s*```(?:json)?\s*\n?(.*?)\n?```\s*$",
+
+    # Common case: fenced markdown JSON.
+    fence = re.search(
+        r"```(?:json)?\s*(.*?)\s*```",
         text,
         flags=re.DOTALL | re.IGNORECASE,
     )
-    if m:
-        text = m.group(1).strip()
-    return json.loads(text)
+    if fence:
+        text = fence.group(1).strip()
+
+    # Some models emit bare unicode symbols for `symbol` values (e.g. "symbol": ‡).
+    text = re.sub(
+        r'("symbol"\s*:\s*)([^"\[\{\],\n][^,\n]*)(\s*[,}])',
+        lambda m: f'{m.group(1)}{json.dumps(m.group(2).strip())}{m.group(3)}',
+        text,
+    )
+
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+
+    # If the model added commentary, extract the first JSON-looking container.
+    candidates = re.findall(r"\{[\s\S]*\}|\[[\s\S]*\]", text)
+    for candidate in candidates:
+        try:
+            parsed = json.loads(candidate)
+            if isinstance(parsed, dict):
+                return parsed
+        except json.JSONDecodeError:
+            continue
+
+    # Final fallback for Python-style dict literals from some models.
+    try:
+        parsed = ast.literal_eval(text)
+    except (ValueError, SyntaxError) as exc:
+        raise json.JSONDecodeError("Unable to parse LLM response as JSON", text, 0) from exc
+
+    if isinstance(parsed, dict):
+        return parsed
+    raise json.JSONDecodeError("Parsed value is not a JSON object", text, 0)

@@ -9,6 +9,7 @@ Two strategies run in sequence:
 
 import re
 import time
+import json
 
 from config import PipelineConfig
 from models import RawFootnote
@@ -96,7 +97,11 @@ def _llm_extract(
         )
         prompt = PROMPT.format(text=combined)
         raw = chat(prompt, config.ollama, system=SYSTEM, verbose=config.verbose)
-        parsed = parse_json(raw)
+        try:
+            parsed = parse_json(raw)
+        except json.JSONDecodeError:
+            # Keep pipeline running; regex fallback can still recover many footnotes.
+            parsed = {"footnotes": []}
 
         for fn in parsed.get("footnotes", []):
             sym = str(fn.get("symbol", "")).strip()
