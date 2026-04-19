@@ -20,7 +20,7 @@ using a local Ollama LLM.
 
 ```bash
 # 1. Install Ollama and pull a model
-ollama pull llama3.1
+ollama pull qwen3-coder:480b-cloud
 ollama serve
 
 # 2. Install Python deps

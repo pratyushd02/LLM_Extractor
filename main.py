@@ -10,7 +10,7 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument("--pdf",     required=True,              help="Path to protocol PDF")
     p.add_argument("--out",     default="soa_footnotes.json", help="Output JSON path")
-    p.add_argument("--model",   default="llama3.1",         help="Ollama model name")
+    p.add_argument("--model",   default="qwen3-coder:480b-cloud",         help="Ollama model name")
     p.add_argument("--host",    default="http://localhost:11434", help="Ollama base URL")
     p.add_argument("--pages",   default="",
                    help="Comma-separated page numbers to search (e.g. 28,29,30). "
