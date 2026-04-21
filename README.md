@@ -82,16 +82,4 @@ python main.py \
 }
 ```
 
-## Running tests
-
-```bash
-pytest tests/ -v
 ```
-
-## What's next (incremental improvements)
-
-- [ ] Table-aware extraction using `pdfplumber` table parser
-- [ ] Symbol-to-cell mapping (which SoA cell carries which footnote marker)
-- [ ] Cross-reference resolution (footnote A references Section 5.2)
-- [ ] CSV / USDM output writer
-- [ ] Evaluation harness with gold-standard annotations
