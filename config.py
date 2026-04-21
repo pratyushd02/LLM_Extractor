@@ -24,7 +24,7 @@ class ExtractionConfig:
         "end of treatment", "follow-up",
     ])
     # How many top-scoring pages to consider as SoA candidates
-    soa_top_n_pages: int = 6
+    soa_top_n_pages: int = 50
 
 
 @dataclass

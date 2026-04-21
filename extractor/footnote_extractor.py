@@ -5,6 +5,10 @@ Takes raw page text, returns a list of RawFootnote objects.
 Two strategies run in sequence:
   1. LLM-based  — more accurate, handles unusual symbols and wrapped text
   2. Regex-based — fast fallback; fills gaps the LLM misses
+
+After extraction, a confidence-scoring pass filters out footnotes that are
+unlikely to belong to the Schedule of Assessments (SOA). Only footnotes with
+SOA confidence > 0.5 are returned for further processing.
 """
 
 import re
@@ -48,6 +52,48 @@ Return {{"footnotes": []}} if none are found. Do NOT invent footnotes.
 {text}
 --- END ---
 """
+
+SOA_CONFIDENCE_SYSTEM = (
+    "You are a clinical trial data engineer. "
+    "You classify footnotes and return only valid JSON — "
+    "no markdown fences, no commentary."
+)
+
+SOA_CONFIDENCE_PROMPT = """\
+You are given a list of footnotes extracted from a clinical trial protocol document.
+
+Your task: for each footnote, estimate the probability (0.0 to 1.0) that it belongs
+to a Schedule of Assessments (SOA) table — i.e. it describes timing, frequency,
+conditions, or procedures for assessments listed in the SOA.
+
+Indicators of a SOA footnote:
+- References visit windows, cycles, days, or timepoints (e.g. "Day 1", "Cycle 2", "within 72 hours")
+- Describes when/how an assessment should be performed
+- Mentions procedures like blood draws, ECGs, biopsies, questionnaires
+- Uses clinical trial language: "predose", "postdose", "screening", "follow-up"
+- Clarifies exceptions or conditions for specific SOA rows/columns
+
+Indicators it is NOT a SOA footnote:
+- Defines abbreviations or acronyms only (e.g. "AE = Adverse Event")
+- Describes general regulatory or ethical statements
+- References sections of the protocol unrelated to assessments
+- Is a general document header/footer note
+
+Return JSON only:
+{{
+  "footnotes": [
+    {{
+      "symbol": "<symbol>",
+      "soa_confidence": <float 0.0–1.0>
+    }}
+  ]
+}}
+
+--- FOOTNOTES ---
+{footnotes}
+--- END ---
+"""
+
 
 # ── Regex fallback ─────────────────────────────────────────────────────────────
 
@@ -116,7 +162,6 @@ def _llm_extract(
         try:
             parsed = parse_json(raw)
         except json.JSONDecodeError:
-            # Keep pipeline running; regex fallback can still recover many footnotes.
             parsed = {"footnotes": []}
 
         for fn in parsed.get("footnotes", []):
@@ -140,15 +185,91 @@ def _llm_extract(
     return results
 
 
+# ── SOA confidence filtering ───────────────────────────────────────────────────
+
+def _filter_soa_footnotes(
+    footnotes: list[RawFootnote],
+    config: PipelineConfig,
+    threshold: float = 0.5,
+    batch_size: int = 20,
+) -> list[RawFootnote]:
+    """
+    Score each footnote for SOA relevance using the LLM.
+    Returns only those with soa_confidence > threshold.
+
+    Footnotes are sent in batches to avoid overflowing the context window.
+    Any footnote whose symbol is missing from the LLM response (parse error,
+    dropout) is kept by default so we don't silently discard data.
+    """
+    if not footnotes:
+        return []
+
+    scores: dict[str, float] = {}
+
+    for i in range(0, len(footnotes), batch_size):
+        batch = footnotes[i : i + batch_size]
+        serialised = json.dumps(
+            [{"symbol": fn.symbol, "text": fn.text} for fn in batch],
+            indent=2,
+        )
+        prompt = SOA_CONFIDENCE_PROMPT.format(footnotes=serialised)
+        raw = chat(
+            prompt, config.ollama, system=SOA_CONFIDENCE_SYSTEM, verbose=config.verbose
+        )
+        try:
+            parsed = parse_json(raw)
+        except json.JSONDecodeError:
+            # Keep all footnotes in this batch on parse failure.
+            if config.verbose:
+                print(
+                    f"[soa_filter] JSON parse error on batch {i}–{i+batch_size}; "
+                    "keeping all footnotes in batch."
+                )
+            for fn in batch:
+                scores[fn.symbol] = 1.0
+            continue
+
+        for item in parsed.get("footnotes", []):
+            sym = _normalize_symbol(str(item.get("symbol", "")))
+            try:
+                confidence = float(item.get("soa_confidence", 0.0))
+            except (TypeError, ValueError):
+                confidence = 0.0
+            scores[sym] = confidence
+
+        time.sleep(0.2)
+
+    kept, dropped = [], []
+    for fn in footnotes:
+        # Default to keeping if the LLM didn't return a score for this symbol.
+        confidence = scores.get(fn.symbol, 1.0)
+        if confidence > threshold:
+            kept.append(fn)
+        else:
+            dropped.append((fn.symbol, confidence))
+
+    if config.verbose and dropped:
+        print(
+            f"[soa_filter] Dropped {len(dropped)} non-SOA footnote(s) "
+            f"(threshold={threshold}): "
+            + ", ".join(f"{s}={c:.2f}" for s, c in dropped)
+        )
+
+    return kept
+
+
 # ── Public API ─────────────────────────────────────────────────────────────────
 
 def extract_footnotes(
     page_texts: dict[int, str],
     config: PipelineConfig,
+    soa_confidence_threshold: float = 0.5,
 ) -> list[RawFootnote]:
     """
-    Extract footnotes from page text using LLM + regex fallback.
-    Returns deduplicated RawFootnote list.
+    Extract footnotes from page text using LLM + regex fallback,
+    then filter to only SOA-relevant footnotes (confidence > soa_confidence_threshold).
+
+    Returns deduplicated, SOA-filtered RawFootnote list.
     """
     llm_results = _llm_extract(page_texts, config)
 
@@ -157,4 +278,11 @@ def extract_footnotes(
     regex_results = _regex_extract(page_texts)
     extras = [fn for fn in regex_results if _normalize_symbol(fn.symbol) not in llm_syms]
 
-    return llm_results + extras
+    all_footnotes = llm_results + extras
+
+    # Filter: keep only footnotes likely belonging to the SOA
+    return _filter_soa_footnotes(
+        all_footnotes,
+        config,
+        threshold=soa_confidence_threshold,
+    )
